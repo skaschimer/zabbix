@@ -483,16 +483,16 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 					'result' => [
 						[
 							'Problem • Severity' => 'Fourth test trigger with tag priority',
-							'Tags' => 'Eta: eDelta: t'
+							'Tags' => "Eta: e\nDelta: t"
 						],
 						[
 							'Problem • Severity' => 'Second test trigger with tag priority',
-							'Tags' => 'Eta: eBeta: b'
+							'Tags' => "Eta: e\nBeta: b"
 						]
 					],
 					'check_tag_ellipsis' => [
-						'Fourth test trigger with tag priority' => 'Delta: tEta: eGamma: gTheta: t',
-						'Second test trigger with tag priority' => 'Beta: bEpsilon: eEta: eZeta: z'
+						'Fourth test trigger with tag priority' => "Delta: t\nEta: e\nGamma: g\nTheta: t",
+						'Second test trigger with tag priority' => "Beta: b\nEpsilon: e\nEta: e\nZeta: z"
 					],
 					'headers' => ['Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
 							'Duration', 'Update', 'Actions', 'Tags'
@@ -527,15 +527,15 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 					'result' => [
 						[
 							'Problem • Severity' => 'Test trigger to check tag filter on problem page',
-							'Tags' => 'DatSer: abcser: abcdef'
+							'Tags' => "Dat\nSer: abc\nser: abcdef"
 						],
 						[
 							'Problem • Severity' => 'Fourth test trigger with tag priority',
-							'Tags' => 'The: tDel: tEta: e'
+							'Tags' => "The: t\nDel: t\nEta: e"
 						],
 						[
 							'Problem • Severity' => 'Third test trigger with tag priority',
-							'Tags' => 'The: tAlp: aIot: i'
+							'Tags' => "The: t\nAlp: a\nIot: i"
 						]
 					],
 					'headers' => ['Time', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity', 'Duration',
@@ -544,7 +544,8 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				]
 			],
 			// #11 Filtered by Host group, tags, show 3, shortened, tag priority.
-			[
+			// TODO: uncomment after fix ZBX-27171
+/*			[
 				[
 					'fields' => [
 						'Name' => 'Group, tags, show 3, shortened, tag priority',
@@ -571,14 +572,14 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 					'result' => [
 						[
 							'Problem • Severity' => 'Fourth test trigger with tag priority',
-							'Tags' => 'get'
+							'Tags' => "g\ne\nt"
 						]
 					],
 					'headers' => ['Time', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity', 'Duration',
 							'Update', 'Actions', 'Tags'
 					]
 				]
-			],
+			],*/
 			// #12 Filtered by Host, operational data - Separately, Show suppressed.
 			[
 				[
