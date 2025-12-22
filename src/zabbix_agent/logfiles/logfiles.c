@@ -2084,9 +2084,21 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							ret = FAIL;
 							goto out;
 						}
+
+						zbx_replace_invalid_utf8(value);
 					}
 					else
-						value = buf;
+					{
+						value = zbx_strdup(NULL, buf);
+
+						if (NULL == value)
+						{
+							ret = FAIL;
+							goto out;
+						}
+
+						zbx_replace_invalid_utf8(value);
+					}
 
 					zabbix_log(LOG_LEVEL_WARNING, "Logfile contains a large record: \"%.64s\""
 							" (showing only the first 64 characters). Only the first 256 kB"
@@ -2161,8 +2173,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							(*s_count)--;
 					}
 
-					if ('\0' != *encoding)
-						zbx_free(value);
+					zbx_free(value);
 
 					if (ZBX_REGEXP_COMPILE_FAIL == regexp_ret)
 					{
@@ -2219,6 +2230,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 
 					*p_nl = '\0';
 
+
 					if ('\0' != *encoding)
 					{
 						if (NULL == (value = zbx_convert_to_utf8(p_start,
@@ -2227,9 +2239,21 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							ret = FAIL;
 							goto out;
 						}
+
+						zbx_replace_invalid_utf8(value);
 					}
 					else
-						value = p_start;
+					{
+						value = zbx_strdup(NULL, p_start);
+
+						if (NULL == value)
+						{
+							ret = FAIL;
+							goto out;
+						}
+
+						zbx_replace_invalid_utf8(value);
+					}
 
 					processed_size = (size_t)offset + (size_t)(p_next - buf);
 					send_err = FAIL;
@@ -2296,8 +2320,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							(*s_count)--;
 					}
 
-					if ('\0' != *encoding)
-						zbx_free(value);
+					zbx_free(value);
 
 					if (ZBX_REGEXP_COMPILE_FAIL == regexp_ret)
 					{
