@@ -2159,9 +2159,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							else
 							{
 								zbx_free(item_value);
-
-								if ('\0' != *encoding)
-									zbx_free(value);
+								zbx_free(value);
 
 								/* Sending of buffer failed. */
 								/* Try to resend it in the next check. */
@@ -2229,7 +2227,6 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 					int	send_err, regexp_ret;
 
 					*p_nl = '\0';
-
 
 					if ('\0' != *encoding)
 					{
@@ -2306,9 +2303,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							else
 							{
 								zbx_free(item_value);
-
-								if ('\0' != *encoding)
-									zbx_free(value);
+								zbx_free(value);
 
 								/* Sending of buffer failed. */
 								/* Try to resend it in the next check. */
