@@ -55,6 +55,7 @@ func decodeToUTF8(encoding string, inbuf []byte, bytecount int) (outbuf []byte, 
 	}
 	if encoding == "" {
 		outbuf = []byte(strings.ToValidUTF8(string(inbuf[:bytecount]), zbxUTF8ReplaceChar))
+
 		return outbuf, len(outbuf), nil
 	}
 	tocode := C.CString("UTF-8")
