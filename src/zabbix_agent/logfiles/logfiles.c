@@ -2089,9 +2089,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 					}
 					else
 					{
-						value = zbx_strdup(NULL, buf);
-
-						if (NULL == value)
+						if (NULL == (value = zbx_strdup(NULL, buf)))
 						{
 							ret = FAIL;
 							goto out;
@@ -2241,9 +2239,7 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 					}
 					else
 					{
-						value = zbx_strdup(NULL, p_start);
-
-						if (NULL == value)
+						if (NULL == (value = zbx_strdup(NULL, p_start)))
 						{
 							ret = FAIL;
 							goto out;
