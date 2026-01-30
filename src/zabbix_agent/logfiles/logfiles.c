@@ -2087,10 +2087,11 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 					}
 					else
 					{
-						value = zbx_strdup(NULL, buf);
+#ifndef PCRE2_MATCH_INVALID_UTF
+						zbx_replace_invalid_utf8(buf);
+#endif
+						value = buf;
 					}
-
-					zbx_replace_invalid_utf8(value);
 
 					zabbix_log(LOG_LEVEL_WARNING, "Logfile contains a large record: \"%.64s\""
 							" (showing only the first 64 characters). Only the first 256 kB"
@@ -2151,7 +2152,9 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							else
 							{
 								zbx_free(item_value);
-								zbx_free(value);
+
+								if ('\0' != *encoding)
+									zbx_free(value);
 
 								/* Sending of buffer failed. */
 								/* Try to resend it in the next check. */
@@ -2163,7 +2166,8 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							(*s_count)--;
 					}
 
-					zbx_free(value);
+					if ('\0' != *encoding)
+						zbx_free(value);
 
 					if (ZBX_REGEXP_COMPILE_FAIL == regexp_ret)
 					{
@@ -2231,10 +2235,11 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 					}
 					else
 					{
-						value = zbx_strdup(NULL, p_start);
+#ifndef PCRE2_MATCH_INVALID_UTF
+						zbx_replace_invalid_utf8(p_start);
+#endif
+						value = p_start;
 					}
-
-					zbx_replace_invalid_utf8(value);
 
 					processed_size = (size_t)offset + (size_t)(p_next - buf);
 					send_err = FAIL;
@@ -2287,7 +2292,9 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							else
 							{
 								zbx_free(item_value);
-								zbx_free(value);
+
+								if ('\0' != *encoding)
+									zbx_free(value);
 
 								/* Sending of buffer failed. */
 								/* Try to resend it in the next check. */
@@ -2299,7 +2306,8 @@ static int	zbx_read2(int fd, unsigned char flags, struct st_logfile *logfile, zb
 							(*s_count)--;
 					}
 
-					zbx_free(value);
+					if ('\0' != *encoding)
+						zbx_free(value);
 
 					if (ZBX_REGEXP_COMPILE_FAIL == regexp_ret)
 					{

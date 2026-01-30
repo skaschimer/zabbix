@@ -25,14 +25,11 @@ import "C"
 
 import (
 	"fmt"
-	"strings"
 	"syscall"
 	"unsafe"
 
 	"golang.zabbix.com/sdk/log"
 )
-
-const zbxUTF8ReplaceChar = "?"
 
 func findEncodingFromBOM(encoding string, inbuf []byte, bytecount int) string {
 	/* try to guess encoding using Byte Order Mark (BOM) if it exists */
@@ -54,9 +51,7 @@ func decodeToUTF8(encoding string, inbuf []byte, bytecount int) (outbuf []byte, 
 		return inbuf, 0, nil
 	}
 	if encoding == "" {
-		outbuf = []byte(strings.ToValidUTF8(string(inbuf[:bytecount]), zbxUTF8ReplaceChar))
-
-		return outbuf, len(outbuf), nil
+		return inbuf, bytecount, nil
 	}
 	tocode := C.CString("UTF-8")
 	log.Tracef("Calling C function \"free()\"")
@@ -103,8 +98,6 @@ func decodeToUTF8(encoding string, inbuf []byte, bytecount int) (outbuf []byte, 
 	if len(outbuf) > 3 && 0xef == outbuf[0] && 0xbb == outbuf[1] && 0xbf == outbuf[2] {
 		outbuf = outbuf[3:]
 	}
-
-	outbuf = []byte(strings.ToValidUTF8(string(outbuf), zbxUTF8ReplaceChar))
 
 	return outbuf, len(outbuf), nil
 }
