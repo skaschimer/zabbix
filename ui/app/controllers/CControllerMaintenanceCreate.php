@@ -1,6 +1,6 @@
 <?php declare(strict_types = 0);
 /*
-** Copyright (C) 2001-2025 Zabbix SIA
+** Copyright (C) 2001-2026 Zabbix SIA
 **
 ** This program is free software: you can redistribute it and/or modify it under the terms of
 ** the GNU Affero General Public License as published by the Free Software Foundation, version 3.
@@ -108,7 +108,6 @@ class CControllerMaintenanceCreate extends CControllerMaintenanceUpdateGeneral {
 
 	protected function checkInput(): bool {
 		$ret = $this->validateInput(self::getValidationRules());
-		$ret = $ret && $this->validateTimePeriods();
 
 		if (!$ret) {
 			$form_errors = $this->getValidationError();

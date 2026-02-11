@@ -1,6 +1,6 @@
 <?php
 /*
-** Copyright (C) 2001-2025 Zabbix SIA
+** Copyright (C) 2001-2026 Zabbix SIA
 **
 ** This program is free software: you can redistribute it and/or modify it under the terms of
 ** the GNU Affero General Public License as published by the Free Software Foundation, version 3.
@@ -20,6 +20,7 @@ class CTimeUnitValidator extends CValidator {
 	protected int $min = 0;
 	protected bool $usermacros = false;
 	protected bool $lldmacros = false;
+	protected bool $accept_zero = false;
 	protected bool $with_year = false;
 
 	public function __construct(array $options = []) {
@@ -29,6 +30,10 @@ class CTimeUnitValidator extends CValidator {
 
 		if (array_key_exists('max', $options)) {
 			$this->max = (int) $options['max'];
+		}
+
+		if (array_key_exists('accept_zero', $options)) {
+			$this->accept_zero = (bool) $options['accept_zero'];
 		}
 
 		if (array_key_exists('with_year', $options)) {
@@ -71,6 +76,10 @@ class CTimeUnitValidator extends CValidator {
 
 		$seconds = timeUnitToSeconds($value, $this->with_year);
 		$convert_options = ['with_year' => $this->with_year];
+
+		if ($this->accept_zero && $seconds == 0) {
+			return true;
+		}
 
 		if ($seconds > $this->max || $seconds < $this->min) {
 			$min_text = $this->min >= 60
