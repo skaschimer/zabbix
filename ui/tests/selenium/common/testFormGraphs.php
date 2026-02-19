@@ -18,7 +18,6 @@ require_once __DIR__.'/../../include/CWebTest.php';
 require_once __DIR__.'/../behaviors/CMessageBehavior.php';
 require_once __DIR__.'/../behaviors/CTableBehavior.php';
 require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../../../include/classes/graphdraw/CGraphDraw.php';
 
 class testFormGraphs extends CWebTest {
 
@@ -368,8 +367,7 @@ class testFormGraphs extends CWebTest {
 					],
 					'details' => [
 						'Incorrect value for field "name": cannot be empty.',
-						'Incorrect value for field "width": value must be no less than "'.
-							CGraphDraw::GRAPH_WIDTH_MIN.'".',
+						'Incorrect value for field "width": value must be no less than "20".',
 						'Incorrect value "" for "height" field.',
 						'Field "items" is mandatory.'
 					]
@@ -409,10 +407,8 @@ class testFormGraphs extends CWebTest {
 						'id:yaxismax' => ''
 					],
 					'details' => [
-						'Incorrect value for field "width": value must be no less than "'.
-							CGraphDraw::GRAPH_WIDTH_MIN.'".',
-						'Incorrect value for field "height": value must be no less than "'.
-							CGraphDraw::GRAPH_HEIGHT_MIN.'".',
+						'Incorrect value for field "width": value must be no less than "20".',
+						'Incorrect value for field "height": value must be no less than "20".',
 						'Field "items" is mandatory.'
 					]
 				]
@@ -423,8 +419,8 @@ class testFormGraphs extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Name' => 'Too large width and height'.($this->prototype ? ' {#KEY}' : NULL),
-						'Width' => CGraphDraw::GRAPH_WIDTH_MAX + 1,
-						'Height' => CGraphDraw::GRAPH_HEIGHT_MAX + 1
+						'Width' => 8001,
+						'Height' => 4501
 					],
 					'items' => [
 						[
@@ -439,10 +435,8 @@ class testFormGraphs extends CWebTest {
 						]
 					],
 					'details' => [
-						'Incorrect value for field "width": value must be no greater than "'.
-							CGraphDraw::GRAPH_WIDTH_MAX.'".',
-						'Incorrect value for field "height": value must be no greater than "'.
-							CGraphDraw::GRAPH_HEIGHT_MAX.'".'
+						'Incorrect value for field "width": value must be no greater than "8000".',
+						'Incorrect value for field "height": value must be no greater than "4500".'
 					]
 				]
 			],
@@ -452,8 +446,8 @@ class testFormGraphs extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Name' => 'Too low width and height'.($this->prototype ? ' {#KEY}' : NULL),
-						'Width' => -(CGraphDraw::GRAPH_WIDTH_MAX + 1),
-						'Height' => -(CGraphDraw::GRAPH_HEIGHT_MAX + 1)
+						'Width' => -8001,
+						'Height' => -4501
 					],
 					'items' => [
 						[
@@ -468,10 +462,8 @@ class testFormGraphs extends CWebTest {
 						]
 					],
 					'details' => [
-						'Incorrect value for field "width": value must be no less than "'.
-							CGraphDraw::GRAPH_WIDTH_MIN.'".',
-						'Incorrect value for field "height": value must be no less than "'.
-							CGraphDraw::GRAPH_HEIGHT_MIN.'".'
+						'Incorrect value for field "width": value must be no less than "20".',
+						'Incorrect value for field "height": value must be no less than "20".'
 					]
 				]
 			],

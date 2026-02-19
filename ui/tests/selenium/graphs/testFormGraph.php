@@ -206,8 +206,8 @@ class testFormGraph extends testFormGraphs {
 				[
 					'fields' => [
 						'Name' => 'Normal graph items in Y axis values',
-						'Width' => CGraphDraw::GRAPH_WIDTH_MAX,
-						'Height' => CGraphDraw::GRAPH_HEIGHT_MAX,
+						'Width' => 8000,
+						'Height' => 4500,
 						'Graph type' => CFormElement::RELOADABLE_FILL('Normal'),
 						'Show legend' => false,
 						'Show working time' => false,
@@ -277,8 +277,8 @@ class testFormGraph extends testFormGraphs {
 				[
 					'fields' => [
 						'Name' => 'Stacked graph fixed Y axis values',
-						'Width' => CGraphDraw::GRAPH_WIDTH_MIN,
-						'Height' => CGraphDraw::GRAPH_HEIGHT_MIN,
+						'Width' => 20,
+						'Height' => 20,
 						'Graph type' => CFormElement::RELOADABLE_FILL('Stacked'),
 						'Show legend' => true,
 						'Show working time' => true,
