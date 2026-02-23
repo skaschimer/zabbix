@@ -104,7 +104,7 @@ static hk_cleanup_table_t	hk_item_cleanup_order[] = {
  * Return value: number of rows deleted                                       *
  *                                                                            *
  ******************************************************************************/
-static int	hk_table_cleanup(const char *table, const char *filter, int config_max_hk_delete, int *more)
+static zbx_int64_t	hk_table_cleanup(const char *table, const char *filter, int config_max_hk_delete, int *more)
 {
 	int	ret = hk_delete_from_table(table, filter, config_max_hk_delete);
 
@@ -127,7 +127,7 @@ static int	hk_table_cleanup(const char *table, const char *filter, int config_ma
  *                                                                            *
  ******************************************************************************/
 static void	hk_item_cleanup(const zbx_vector_hk_housekeeper_t *hk_entries, int config_max_hk_delete,
-		zbx_vector_uint64_t *deleteids, int *deleted_history, int *deleted_problems)
+		zbx_vector_uint64_t *deleteids, zbx_int64_t *deleted_history, zbx_int64_t *deleted_problems)
 {
 	unsigned int	complete_mask = (1 << ARRSIZE(hk_item_cleanup_order)) - 1;
 
@@ -158,8 +158,9 @@ static void	hk_item_cleanup(const zbx_vector_hk_housekeeper_t *hk_entries, int c
 
 			if (0 == (entry->progress & (1 << i)))
 			{
-				int	more = 0, deleted = 0;
-				char	filter[MAX_STRING_LEN];
+				int		more = 0;
+				zbx_int64_t	deleted = 0;
+				char		filter[MAX_STRING_LEN];
 
 				zbx_snprintf(filter, sizeof(filter), table->filter, objectid);
 
@@ -207,7 +208,8 @@ static void	hk_item_cleanup(const zbx_vector_hk_housekeeper_t *hk_entries, int c
 }
 
 static void	housekeep_events_by_triggerid(const zbx_vector_hk_housekeeper_t *hk_entries, int config_max_hk_delete,
-		int events_mode, zbx_vector_uint64_t *deleteids, int *deleted_events, int *deleted_problems)
+		int events_mode, zbx_vector_uint64_t *deleteids, zbx_int64_t *deleted_events,
+		zbx_int64_t *deleted_problems)
 {
 	for (int i = 0; i < hk_entries->values_num; i++)
 	{
@@ -259,10 +261,10 @@ static void	housekeep_events_by_triggerid(const zbx_vector_hk_housekeeper_t *hk_
  * Return value: number of rows deleted                                       *
  *                                                                            *
  ******************************************************************************/
-static int	hk_problem_cleanup(const zbx_vector_hk_housekeeper_t *hk_entries, const char *table, int source,
+static zbx_int64_t	hk_problem_cleanup(const zbx_vector_hk_housekeeper_t *hk_entries, const char *table, int source,
 		int object, int config_max_hk_delete, zbx_vector_uint64_t *deleteids)
 {
-	int	deleted = 0;
+	zbx_int64_t	deleted = 0;
 
 	for (int i = 0; i < hk_entries->values_num; i++)
 	{
@@ -297,7 +299,8 @@ void	housekeeper_deinit(void)
 	zbx_hashset_destroy(&hk_cache);
 }
 
-void	housekeeper_process(int config_max_hk_delete, int *deleted_history, int *deleted_events, int *deleted_problems)
+void	housekeeper_process(int config_max_hk_delete, zbx_int64_t *deleted_history, zbx_int64_t *deleted_events,
+		zbx_int64_t *deleted_problems)
 {
 	zbx_db_result_t		result;
 	zbx_db_row_t		row;
@@ -377,6 +380,7 @@ void	housekeeper_process(int config_max_hk_delete, int *deleted_history, int *de
 	zbx_vector_uint64_destroy(&deleteids);
 
 out:
-	zabbix_log(LOG_LEVEL_DEBUG, "End of %s() deleted_history:%d deleted_events:%d deleted_problems:%d", __func__,
-			*deleted_history, *deleted_events, *deleted_problems);
+	zabbix_log(LOG_LEVEL_DEBUG, "End of %s() deleted_history:" ZBX_FS_I64 " deleted_events:" ZBX_FS_I64
+			" deleted_problems:" ZBX_FS_I64, __func__, *deleted_history, *deleted_events,
+			*deleted_problems);
 }
