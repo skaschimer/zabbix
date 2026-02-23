@@ -1,6 +1,6 @@
 <?php
 /*
-** Copyright (C) 2001-2025 Zabbix SIA
+** Copyright (C) 2001-2026 Zabbix SIA
 **
 ** This program is free software: you can redistribute it and/or modify it under the terms of
 ** the GNU Affero General Public License as published by the Free Software Foundation, version 3.
@@ -18,8 +18,13 @@ class CAbsoluteTimeValidator extends CValidator {
 
 	protected ?int $max = null;
 	protected ?int $min = null;
+	protected bool $date_only = false;
 
 	public function __construct(array $options = []) {
+		if (array_key_exists('date_only', $options)) {
+			$this->date_only = (bool) $options['date_only'];
+		}
+
 		if (array_key_exists('min', $options)) {
 			$this->min = (int) $options['min'];
 		}
@@ -35,11 +40,9 @@ class CAbsoluteTimeValidator extends CValidator {
 	 * - is between provided min and max timestamps
 	 *
 	 * @param string $value
-	 *
-	 * @return bool
 	 */
 	public function validate($value): bool {
-		$parser = new CAbsoluteTimeParser();
+		$parser = new CAbsoluteTimeParser(['date_only' => $this->date_only]);
 
 		if ($parser->parse($value) != CParser::PARSE_SUCCESS) {
 			$this->setError(_('invalid date'));
