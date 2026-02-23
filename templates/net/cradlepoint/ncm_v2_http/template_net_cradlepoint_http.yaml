@@ -235,6 +235,14 @@ zabbix_export:
           tags:
             - tag: component
               value: system
+          triggers:
+            - uuid: d1defc9c540043edbb31c17280129d11
+              expression: '{$NCM.DEVICES.REBOOT.TH}<>-1 and length(last(/Cradlepoint NCM v2 by HTTP/cradlepoint.devices.reboot_required))>{$NCM.DEVICES.REBOOT.TH}'
+              name: 'Cradlepoint: More than {$NCM.DEVICES.REBOOT.TH} devices required reboot'
+              priority: INFO
+              tags:
+                - tag: scope
+                  value: notice
         - uuid: 581006b29fab4e93bbf394d28200bde8
           name: 'Total devices'
           type: DEPENDENT
@@ -263,6 +271,14 @@ zabbix_export:
           tags:
             - tag: component
               value: system
+          triggers:
+            - uuid: 70f42ff8c8014fb987d00a0ec426547b
+              expression: '{$NCM.DEVICES.UPGRADE.TH}<>-1 and length(last(/Cradlepoint NCM v2 by HTTP/cradlepoint.devices.upgrade_pending))>{$NCM.DEVICES.UPGRADE.TH}'
+              name: 'Cradlepoint: More than {$NCM.DEVICES.UPGRADE.TH} devices awaiting upgrade'
+              priority: INFO
+              tags:
+                - tag: scope
+                  value: notice
       discovery_rules:
         - uuid: e4609c621e6848ecab825d0bf59776b7
           name: 'Devices discovery'
@@ -296,10 +312,6 @@ zabbix_export:
               tags:
                 - tag: device
                   value: '{#TYPE}'
-              custom_interfaces: 'YES'
-              interfaces:
-                - ip: '{#IP}'
-                  port: '161'
           master_item:
             key: cradlepoint.devices.get
           lld_macro_paths:
@@ -367,22 +379,42 @@ zabbix_export:
             description: 'A response timeout for an API.'
         - macro: '{$NCM.DEVICE.NAME.MATCHES}'
           value: '.*'
-          description: 'This macro is used in device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter devices based on their names. Only devices with names matching this regex will be monitored.'
+          config:
+            type: TEXT
+            priority: '10'
+            section_name: Filters
+            label: 'Device discovery name filter (include)'
+            description: 'Regular expression to filter devices based on their names. Only devices with names matching this regex will be monitored.'
+        - macro: '{$NCM.DEVICE.NAME.NOT_MATCHES}'
+          value: CHANGE_IF_NEEDED
+          description: 'Regular expression to filter devices based on their names. Devices with names matching this regex will be excluded from monitoring.'
+          config:
+            type: TEXT
+            priority: '11'
+            section_name: Filters
+            label: 'Device discovery name filter (exclude)'
+            description: 'Regular expression to filter devices based on their names. Devices with names matching this regex will be excluded from monitoring.'
+        - macro: '{$NCM.DEVICES.REBOOT.TH}'
+          value: '5'
+          description: 'The maximum number of devices requiring a reboot without firing the trigger. The trigger can be disabled by setting the value to -1.'
           config:
             type: TEXT
             priority: '8'
-            section_name: Filters
-            label: 'Device discovery macro (include)'
-            description: 'This macro is used in device discovery. Can be overridden on the host or linked template level.'
-        - macro: '{$NCM.DEVICE.NAME.NOT_MATCHES}'
-          value: CHANGE_IF_NEEDED
-          description: 'This macro is used in device discovery. Can be overridden on the host or linked template level.'
+            section_name: Other
+            label: 'Requiring reboot devices threshold'
+            description: 'The maximum number of devices requiring a reboot without firing the trigger. No less than -1.'
+            regex: '^-?([0-9]+|(([0-9]+)\.([0-9]+)))$'
+        - macro: '{$NCM.DEVICES.UPGRADE.TH}'
+          value: '5'
+          description: 'The maximum number of devices with pending upgrade without firing the trigger. The trigger can be disabled by setting the value to -1.'
           config:
             type: TEXT
             priority: '9'
-            section_name: Filters
-            label: 'Device discovery macro (exclude)'
-            description: 'This macro is used in device discovery. Can be overridden on the host or linked template level.'
+            section_name: Other
+            label: 'Awaiting upgrade devices threshold'
+            description: 'The maximum number of devices with pending upgrade without firing the trigger. No less than -1.'
+            regex: '^-?([0-9]+|(([0-9]+)\.([0-9]+)))$'
         - macro: '{$NCM.ECM.API.ID}'
           type: SECRET_TEXT
           description: 'NetCloud Manager X-ECM-API-ID.'
@@ -405,7 +437,7 @@ zabbix_export:
           description: 'HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port]. See the documentation at https://www.zabbix.com/documentation/8.0/manual/config/items/itemtypes/http'
           config:
             type: TEXT
-            priority: '10'
+            priority: '12'
             section_name: Other
             label: 'HTTP proxy for API requests'
             description: 'HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port]. See the documentation at https://www.zabbix.com/documentation/8.0/manual/config/items/itemtypes/http'
@@ -1017,7 +1049,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.lan.netmask[{#ID}]'
               value_type: CHAR
-              description: 'LAN''s IP address.'
+              description: 'Netmask for the LAN.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1927,112 +1959,112 @@ zabbix_export:
             description: 'HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port].'
         - macro: '{$NCM.LAN.NAME.MATCHES}'
           value: '.*'
-          description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter LANs based on their names. Only LANs with names matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '11'
             section_name: Other
             label: 'LAN discovery name filter (include)'
-            description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter LANs based on their names. Only LANs with names matching this regex will be monitored.'
         - macro: '{$NCM.LAN.NAME.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter LANs based on their names. LANs with names matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '12'
             section_name: Other
             label: 'LAN discovery name filter (exclude)'
-            description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter LANs based on their names. LANs with names matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.LAN.STATUS.MATCHES}'
           value: '.*'
-          description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter LANs based on their statuses. Only LANs with statuses matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '13'
             section_name: Other
             label: 'LAN discovery status filter (include)'
-            description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter LANs based on their statuses. Only LANs with statuses matching this regex will be monitored.'
         - macro: '{$NCM.LAN.STATUS.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter LANs based on their statuses. LANs with statuses matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '14'
             section_name: Other
             label: 'LAN discovery status filter (exclude)'
-            description: 'This macro is used in LAN discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter LANs based on their statuses. LANs with statuses matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.NET.DEVICE.CONN.MATCHES}'
           value: '.*'
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their connection types. Only devices with connection types matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '21'
             section_name: Other
             label: 'Network device connection filter (include)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their connection types. Only devices with connection types matching this regex will be monitored.'
         - macro: '{$NCM.NET.DEVICE.CONN.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their connection types. Devices with connection types matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '22'
             section_name: Other
             label: 'Network device connection filter (exclude)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their connection types. Devices with connection types matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.NET.DEVICE.MODE.MATCHES}'
           value: '.*'
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their modes. Only devices with modes matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '17'
             section_name: Other
             label: 'Network device mode filter (include)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their modes. Only devices with modes matching this regex will be monitored.'
         - macro: '{$NCM.NET.DEVICE.MODE.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their modes. Devices with modes matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '18'
             section_name: Other
             label: 'Network device mode filter (exclude)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their modes. Devices with modes matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.NET.DEVICE.NAME.MATCHES}'
           value: '.*'
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their names. Only devices with names matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '15'
             section_name: Other
             label: 'Network device name filter (include)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their names. Only devices with names matching this regex will be monitored.'
         - macro: '{$NCM.NET.DEVICE.NAME.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their statuses. Devices with names matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '16'
             section_name: Other
             label: 'Network device name filter (exclude)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their statuses. Devices with names matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.NET.DEVICE.TYPE.MATCHES}'
           value: '.*'
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their types. Only devices with types matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '19'
             section_name: Other
             label: 'Network device type filter (include)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their types. Only devices with types matching this regex will be monitored.'
         - macro: '{$NCM.NET.DEVICE.TYPE.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+          description: 'Regular expression to filter Network devices based on their types. Devices with types matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '20'
             section_name: Other
             label: 'Network device type filter (exclude)'
-            description: 'This macro is used in Network device discovery. Can be overridden on the host or linked template level.'
+            description: 'Regular expression to filter Network devices based on their types. Devices with types matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.RESP.DATA.LIMIT}'
           value: '500'
           description: 'The number of records returned by API. Max value is 500.'

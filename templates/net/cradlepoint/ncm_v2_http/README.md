@@ -41,8 +41,10 @@ This template has been tested on:
 |{$NCM.ECM.API.KEY}|<p>NetCloud Manager X-ECM-API-KEY.</p>||
 |{$NCM.DATA.TIMEOUT}|<p>A response timeout for an API.</p>|`15s`|
 |{$NCM.RESP.DATA.LIMIT}|<p>The number of records returned by API. Max value is 500.</p>|`500`|
-|{$NCM.DEVICE.NAME.MATCHES}|<p>This macro is used in device discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.DEVICE.NAME.NOT_MATCHES}|<p>This macro is used in device discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.DEVICES.REBOOT.TH}|<p>The maximum number of devices requiring a reboot without firing the trigger. The trigger can be disabled by setting the value to -1.</p>|`5`|
+|{$NCM.DEVICES.UPGRADE.TH}|<p>The maximum number of devices with pending upgrade without firing the trigger. The trigger can be disabled by setting the value to -1.</p>|`5`|
+|{$NCM.DEVICE.NAME.MATCHES}|<p>Regular expression to filter devices based on their names. Only devices with names matching this regex will be monitored.</p>|`.*`|
+|{$NCM.DEVICE.NAME.NOT_MATCHES}|<p>Regular expression to filter devices based on their names. Devices with names matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
 |{$NCM.HTTP_PROXY}|<p>HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port]. See the documentation at https://www.zabbix.com/documentation/8.0/manual/config/items/itemtypes/http</p>||
 
 ### Items
@@ -60,6 +62,8 @@ This template has been tested on:
 |Name|Description|Expression|Severity|Dependencies and additional info|
 |----|-----------|----------|--------|--------------------------------|
 |Cradlepoint: There are errors in the 'Get devices' metric||`length(last(/Cradlepoint NCM v2 by HTTP/cradlepoint.devices.errors))>0`|Warning||
+|Cradlepoint: More than {$NCM.DEVICES.REBOOT.TH} devices required reboot||`{$NCM.DEVICES.REBOOT.TH}<>-1 and length(last(/Cradlepoint NCM v2 by HTTP/cradlepoint.devices.reboot_required))>{$NCM.DEVICES.REBOOT.TH}`|Info||
+|Cradlepoint: More than {$NCM.DEVICES.UPGRADE.TH} devices awaiting upgrade||`{$NCM.DEVICES.UPGRADE.TH}<>-1 and length(last(/Cradlepoint NCM v2 by HTTP/cradlepoint.devices.upgrade_pending))>{$NCM.DEVICES.UPGRADE.TH}`|Info||
 
 ### LLD rule Devices discovery
 
@@ -83,18 +87,18 @@ This template has been tested on:
 |{$NCM.RESP.DATA.LIMIT}|<p>The number of records returned by API. Max value is 500.</p>|`500`|
 |{$REBOOT.CONTROL}|<p>The macro is used as a flag to control device reboot tracking for the 'Reboot is required' trigger.</p>|`1`|
 |{$SIM.PIN.CONTROL}|<p>The macro is used as a flag to control SIM PIN readiness tracking for the 'SIM PIN is not ready' trigger. Can be used with the net device ID as context.</p>|`1`|
-|{$NCM.LAN.NAME.MATCHES}|<p>This macro is used in LAN discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.LAN.NAME.NOT_MATCHES}|<p>This macro is used in LAN discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
-|{$NCM.LAN.STATUS.MATCHES}|<p>This macro is used in LAN discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.LAN.STATUS.NOT_MATCHES}|<p>This macro is used in LAN discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
-|{$NCM.NET.DEVICE.NAME.MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.NET.DEVICE.NAME.NOT_MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
-|{$NCM.NET.DEVICE.MODE.MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.NET.DEVICE.MODE.NOT_MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
-|{$NCM.NET.DEVICE.TYPE.MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.NET.DEVICE.TYPE.NOT_MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
-|{$NCM.NET.DEVICE.CONN.MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`.*`|
-|{$NCM.NET.DEVICE.CONN.NOT_MATCHES}|<p>This macro is used in Network device discovery. Can be overridden on the host or linked template level.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.LAN.NAME.MATCHES}|<p>Regular expression to filter LANs based on their names. Only LANs with names matching this regex will be monitored.</p>|`.*`|
+|{$NCM.LAN.NAME.NOT_MATCHES}|<p>Regular expression to filter LANs based on their names. LANs with names matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.LAN.STATUS.MATCHES}|<p>Regular expression to filter LANs based on their statuses. Only LANs with statuses matching this regex will be monitored.</p>|`.*`|
+|{$NCM.LAN.STATUS.NOT_MATCHES}|<p>Regular expression to filter LANs based on their statuses. LANs with statuses matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.NET.DEVICE.NAME.MATCHES}|<p>Regular expression to filter Network devices based on their names. Only devices with names matching this regex will be monitored.</p>|`.*`|
+|{$NCM.NET.DEVICE.NAME.NOT_MATCHES}|<p>Regular expression to filter Network devices based on their statuses. Devices with names matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.NET.DEVICE.MODE.MATCHES}|<p>Regular expression to filter Network devices based on their modes. Only devices with modes matching this regex will be monitored.</p>|`.*`|
+|{$NCM.NET.DEVICE.MODE.NOT_MATCHES}|<p>Regular expression to filter Network devices based on their modes. Devices with modes matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.NET.DEVICE.TYPE.MATCHES}|<p>Regular expression to filter Network devices based on their types. Only devices with types matching this regex will be monitored.</p>|`.*`|
+|{$NCM.NET.DEVICE.TYPE.NOT_MATCHES}|<p>Regular expression to filter Network devices based on their types. Devices with types matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
+|{$NCM.NET.DEVICE.CONN.MATCHES}|<p>Regular expression to filter Network devices based on their connection types. Only devices with connection types matching this regex will be monitored.</p>|`.*`|
+|{$NCM.NET.DEVICE.CONN.NOT_MATCHES}|<p>Regular expression to filter Network devices based on their connection types. Devices with connection types matching this regex will be excluded from monitoring.</p>|`CHANGE_IF_NEEDED`|
 |{$NCM.HTTP_PROXY}|<p>HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port]. See the documentation at https://www.zabbix.com/documentation/8.0/manual/config/items/itemtypes/http</p>||
 
 ### Items
@@ -136,7 +140,7 @@ This template has been tested on:
 |----|-----------|----|-----------------------|
 |{#NAME}: Get data|<p>Item for gathering data for the {#NAME} LAN.</p>|Dependent item|cradlepoint_device.lan.data_get[{#ID}]<p>**Preprocessing**</p><ul><li><p>JSON Path: `$.data.lans[?(@.id == '{#ID}')].first()`</p><p>⛔️Custom on fail: Discard value</p></li></ul>|
 |{#NAME}: IP address|<p>LAN's IP address.</p>|Dependent item|cradlepoint_device.lan.ip_address[{#ID}]<p>**Preprocessing**</p><ul><li><p>JSON Path: `$.ip_address`</p><p>⛔️Custom on fail: Discard value</p></li><li><p>Discard unchanged with heartbeat: `12h`</p></li></ul>|
-|{#NAME}: Netmask|<p>LAN's IP address.</p>|Dependent item|cradlepoint_device.lan.netmask[{#ID}]<p>**Preprocessing**</p><ul><li><p>JSON Path: `$.netmask`</p><p>⛔️Custom on fail: Discard value</p></li><li><p>Discard unchanged with heartbeat: `12h`</p></li></ul>|
+|{#NAME}: Netmask|<p>Netmask for the LAN.</p>|Dependent item|cradlepoint_device.lan.netmask[{#ID}]<p>**Preprocessing**</p><ul><li><p>JSON Path: `$.netmask`</p><p>⛔️Custom on fail: Discard value</p></li><li><p>Discard unchanged with heartbeat: `12h`</p></li></ul>|
 |{#NAME}: State|<p>LAN's state, e.g. enabled/disabled.</p>|Dependent item|cradlepoint_device.lan.state[{#ID}]<p>**Preprocessing**</p><ul><li><p>JSON Path: `$.enabled`</p><p>⛔️Custom on fail: Discard value</p></li><li><p>JavaScript: `The text is too long. Please see the template.`</p></li></ul>|
 
 ### LLD rule Network device discovery
