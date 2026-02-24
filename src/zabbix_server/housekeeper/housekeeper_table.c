@@ -29,13 +29,15 @@
 
 #define ZBX_HK_OBJECT_NUM	5
 
-typedef struct {
+typedef struct
+{
 	zbx_uint64_t	objectid;
 	zbx_uint64_t	housekeeperid;
 	unsigned int	progress;
 } hk_entry_t;
 
-typedef struct {
+typedef struct
+{
 	zbx_uint64_t	housekeeperid;
 	int		object;
 	zbx_uint64_t	objectid;
@@ -45,7 +47,8 @@ ZBX_PTR_VECTOR_DECL(hk_housekeeper, hk_housekeeper_t)
 ZBX_PTR_VECTOR_IMPL(hk_housekeeper, hk_housekeeper_t)
 
 /* this structure is used to list tables to cleanup */
-typedef struct {
+typedef struct
+{
 	/* cleanup table name */
 	const char	*name;
 
