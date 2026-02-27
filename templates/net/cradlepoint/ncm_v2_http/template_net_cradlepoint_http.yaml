@@ -352,7 +352,7 @@ zabbix_export:
             required: 'YES'
         - macro: '{$NCM.CP.API.ID}'
           type: SECRET_TEXT
-          description: 'NetCloud Manager X-CP-API-ID.'
+          description: 'NetCloud Manager `X-CP-API-ID`.'
           config:
             type: TEXT
             priority: '2'
@@ -361,7 +361,7 @@ zabbix_export:
             required: 'YES'
         - macro: '{$NCM.CP.API.KEY}'
           type: SECRET_TEXT
-          description: 'NetCloud Manager X-CP-API-KEY.'
+          description: 'NetCloud Manager `X-CP-API-KEY`.'
           config:
             type: TEXT
             priority: '3'
@@ -370,54 +370,54 @@ zabbix_export:
             required: 'YES'
         - macro: '{$NCM.DATA.TIMEOUT}'
           value: 15s
-          description: 'A response timeout for an API.'
+          description: 'The response timeout for the API.'
           config:
             type: TEXT
             priority: '6'
             section_name: Other
             label: 'API response timeout'
-            description: 'A response timeout for an API.'
+            description: 'The response timeout for the API.'
         - macro: '{$NCM.DEVICE.NAME.MATCHES}'
           value: '.*'
-          description: 'Regular expression to filter devices based on their names. Only devices with names matching this regex will be monitored.'
+          description: 'A regular expression to filter devices by name. Only devices with names matching this regex will be monitored.'
           config:
             type: TEXT
             priority: '10'
             section_name: Filters
             label: 'Device discovery name filter (include)'
-            description: 'Regular expression to filter devices based on their names. Only devices with names matching this regex will be monitored.'
+            description: 'A regular expression to filter devices by name. Only devices with names matching this regex will be monitored.'
         - macro: '{$NCM.DEVICE.NAME.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-          description: 'Regular expression to filter devices based on their names. Devices with names matching this regex will be excluded from monitoring.'
+          description: 'Regular expression to filter devices by name. Devices with names matching this regex will be excluded from monitoring.'
           config:
             type: TEXT
             priority: '11'
             section_name: Filters
             label: 'Device discovery name filter (exclude)'
-            description: 'Regular expression to filter devices based on their names. Devices with names matching this regex will be excluded from monitoring.'
+            description: 'Regular expression to filter devices by name. Devices with names matching this regex will be excluded from monitoring.'
         - macro: '{$NCM.DEVICES.REBOOT.TH}'
           value: '5'
-          description: 'The maximum number of devices requiring a reboot without firing the trigger. The trigger can be disabled by setting the value to -1.'
+          description: 'The maximum number of devices requiring a reboot before the trigger fires. The trigger can be disabled by setting the value to `-1`.'
           config:
             type: TEXT
             priority: '8'
             section_name: Other
             label: 'Requiring reboot devices threshold'
-            description: 'The maximum number of devices requiring a reboot without firing the trigger. No less than -1.'
+            description: 'The maximum number of devices requiring a reboot before the trigger fires. No less than -1.'
             regex: '^-?([0-9]+|(([0-9]+)\.([0-9]+)))$'
         - macro: '{$NCM.DEVICES.UPGRADE.TH}'
           value: '5'
-          description: 'The maximum number of devices with pending upgrade without firing the trigger. The trigger can be disabled by setting the value to -1.'
+          description: 'The maximum number of devices with a pending upgrade before the trigger fires. The trigger can be disabled by setting the value to `-1`.'
           config:
             type: TEXT
             priority: '9'
             section_name: Other
             label: 'Awaiting upgrade devices threshold'
-            description: 'The maximum number of devices with pending upgrade without firing the trigger. No less than -1.'
+            description: 'The maximum number of devices with a pending upgrade before the trigger fires. No less than -1.'
             regex: '^-?([0-9]+|(([0-9]+)\.([0-9]+)))$'
         - macro: '{$NCM.ECM.API.ID}'
           type: SECRET_TEXT
-          description: 'NetCloud Manager X-ECM-API-ID.'
+          description: 'NetCloud Manager `X-ECM-API-ID`.'
           config:
             type: TEXT
             priority: '4'
@@ -426,7 +426,7 @@ zabbix_export:
             required: 'YES'
         - macro: '{$NCM.ECM.API.KEY}'
           type: SECRET_TEXT
-          description: 'NetCloud Manager X-ECM-API-KEY.'
+          description: 'NetCloud Manager `X-ECM-API-KEY`.'
           config:
             type: TEXT
             priority: '5'
@@ -440,16 +440,16 @@ zabbix_export:
             priority: '12'
             section_name: Other
             label: 'HTTP proxy for API requests'
-            description: 'HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port]. See the documentation at https://www.zabbix.com/documentation/8.0/manual/config/items/itemtypes/http'
+            description: 'HTTP proxy for API requests. You can specify it using the format [protocol://][username[:password]@]proxy.example.com[:port].'
         - macro: '{$NCM.RESP.DATA.LIMIT}'
           value: '500'
-          description: 'The number of records returned by API. Max value is 500.'
+          description: 'The number of records returned by the API. Max value is `500`.'
           config:
             type: TEXT
             priority: '7'
             section_name: Other
             label: 'API response limit'
-            description: 'The number of records returned by API. In the range from 1 to 500 inclusive.'
+            description: 'The number of records returned by the API. In the range from 1 to 500 inclusive.'
             regex: '^-?([0-9]+|(([0-9]+)\.([0-9]+)))$'
       dashboards:
         - uuid: ed371a522c6d4bd4907fd5697c9904d3
@@ -541,12 +541,12 @@ zabbix_export:
         - name: 'Templates/Network devices'
       items:
         - uuid: 6e2f0b86ef4f4b399368d13ad46e4012
-          name: 'Get devices item errors'
+          name: 'Get device item errors'
           type: DEPENDENT
           key: cradlepoint_device.data.errors
           history: 1h
           value_type: TEXT
-          description: 'Item for gathering device data item errors.'
+          description: 'Item for gathering device data errors.'
           preprocessing:
             - type: JSONPATH
               parameters:
@@ -704,7 +704,7 @@ zabbix_export:
             result.error = error_msg;
             
             return JSON.stringify(result);
-          description: 'Item for gathering data of the device from NetCloud Manager API.'
+          description: 'Item for gathering device data from the NetCloud Manager API.'
           timeout: '{$NCM.DATA.TIMEOUT:"device_data"}'
           parameters:
             - name: api_url
@@ -769,7 +769,7 @@ zabbix_export:
           type: DEPENDENT
           key: cradlepoint_device.device_type
           value_type: CHAR
-          description: 'Type of device, e.g. router or access point.'
+          description: 'Type of device, e.g., router or access point.'
           inventory_link: TYPE
           preprocessing:
             - type: JSONPATH
@@ -887,7 +887,7 @@ zabbix_export:
           name: 'Reboot required'
           type: DEPENDENT
           key: cradlepoint_device.reboot_required
-          description: 'Reboot is required to enable additional device functionality.'
+          description: 'Indicates if a reboot is required to enable additional device functionality.'
           valuemap:
             name: 'Boolean status'
           preprocessing:
@@ -1003,14 +1003,14 @@ zabbix_export:
               - macro: '{#STATUS}'
                 value: '{$NCM.LAN.STATUS.NOT_MATCHES}'
                 operator: NOT_MATCHES_REGEX
-          description: 'Discovering devices from NetCloud Manager API.'
+          description: 'Discovery of LANs via the NetCloud Manager API.'
           item_prototypes:
             - uuid: 6dbcf7a010eb44dc9d7aa7a89289c480
               name: '{#NAME}: Get data'
               type: DEPENDENT
               key: 'cradlepoint_device.lan.data_get[{#ID}]'
               value_type: TEXT
-              description: 'Item for gathering data for the {#NAME} LAN.'
+              description: 'Item for gathering data for the `{#NAME}` LAN.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1028,7 +1028,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.lan.ip_address[{#ID}]'
               value_type: CHAR
-              description: 'LAN''s IP address.'
+              description: 'IP address of the LAN.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1049,7 +1049,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.lan.netmask[{#ID}]'
               value_type: CHAR
-              description: 'Netmask for the LAN.'
+              description: 'Netmask of the LAN.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1070,7 +1070,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.lan.state[{#ID}]'
               trends: '0'
-              description: 'LAN''s state, e.g. enabled/disabled.'
+              description: 'State of the LAN, e.g., enabled or disabled.'
               valuemap:
                 name: 'LAN state'
               preprocessing:
@@ -1141,7 +1141,7 @@ zabbix_export:
               - macro: '{#TYPE}'
                 value: '{$NCM.NET.DEVICE.TYPE.NOT_MATCHES}'
                 operator: NOT_MATCHES_REGEX
-          description: 'Discovering network devices connected through the router.'
+          description: 'Discovery of network devices connected through the router.'
           item_prototypes:
             - uuid: d7b6b4a0cc3a424ea9d62205b71b2720
               name: '{#NAME}: APN'
@@ -1179,7 +1179,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.carrier[{#ID}]'
               value_type: CHAR
-              description: 'The connected carrier if available. Otherwise, the carrier the modem is configured to connect to.'
+              description: 'The connected carrier, if available; otherwise, the carrier the modem is configured to connect to.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1314,7 +1314,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.firmware[{#ID}]'
               value_type: CHAR
-              description: 'Firmware version of the {#NAME} device.'
+              description: 'Firmware version of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1345,7 +1345,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.gateway[{#ID}]'
               value_type: CHAR
-              description: 'Gateway server onto network.'
+              description: 'Gateway of the network.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1377,7 +1377,7 @@ zabbix_export:
               key: 'cradlepoint_device.net_device.info_get[{#ID}]'
               history: '0'
               value_type: TEXT
-              description: 'Item for gathering general information about the {#NAME} network device.'
+              description: 'Item for gathering general information about the `{#NAME}` network device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1401,7 +1401,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.ipv4_address[{#ID}]'
               value_type: CHAR
-              description: 'IPv4 address of the {#NAME} device.'
+              description: 'IPv4 address of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1432,7 +1432,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.ipv6_address[{#ID}]'
               value_type: CHAR
-              description: 'IPv6 address of the {#NAME} device.'
+              description: 'IPv6 address of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1459,11 +1459,11 @@ zabbix_export:
                 - tag: type
                   value: '{#TYPE}'
             - uuid: 673c722338b543e99cf5eb7b3f7b9353
-              name: '{#NAME}: LTE Band width'
+              name: '{#NAME}: LTE bandwidth'
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.ltebandwidth[{#ID}]'
               units: Hz
-              description: 'Indicates the frequency width of the LTE Band being used by the modem module.'
+              description: 'Indicates the frequency width of the LTE band being used by the modem module.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1518,7 +1518,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.mac_address[{#ID}]'
               value_type: CHAR
-              description: 'MAC address of the {#NAME} device.'
+              description: 'MAC address of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1549,7 +1549,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.model[{#ID}]'
               value_type: CHAR
-              description: 'Manufacturing model of the {#NAME} device.'
+              description: 'Manufacturing model of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1580,7 +1580,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.netmask[{#ID}]'
               value_type: CHAR
-              description: 'Netmask of the {#NAME} device.'
+              description: 'Netmask of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1659,7 +1659,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.product_name[{#ID}]'
               value_type: CHAR
-              description: 'Product name of the {#NAME} device.'
+              description: 'Product name of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1686,10 +1686,10 @@ zabbix_export:
                 - tag: type
                   value: '{#TYPE}'
             - uuid: 017fc452e2cc4529b1bc0e6388c0548a
-              name: '{#NAME}: Radio Frequency Band'
+              name: '{#NAME}: Radio frequency band'
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.rf_band[{#ID}]'
-              description: 'Indicates the Radio Frequency Band that is currently being used by the modem module.'
+              description: 'Indicates the radio frequency band that is currently being used by the modem module.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1713,10 +1713,10 @@ zabbix_export:
                 - tag: type
                   value: '{#TYPE}'
             - uuid: a612ef37b197468a994a8c41e99a2f70
-              name: '{#NAME}: Radio Frequency Band 5G'
+              name: '{#NAME}: Radio frequency band 5G'
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.rf_band_5g[{#ID}]'
-              description: 'Indicates the 5G Radio Frequency Band that is currently being used by the modem module.'
+              description: 'Indicates the 5G radio frequency band that is currently being used by the modem module.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1740,10 +1740,10 @@ zabbix_export:
                 - tag: type
                   value: '{#TYPE}'
             - uuid: 22b5cf8f07384bbc8a68ff8c12fd7c3d
-              name: '{#NAME}: Radio Frequency Channel'
+              name: '{#NAME}: Radio frequency channel'
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.rf_channel[{#ID}]'
-              description: 'Indicates the Radio Frequency Channel that is currently being used by the modem module.'
+              description: 'Indicates the radio frequency channel that is currently being used by the modem module.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1771,7 +1771,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.serial[{#ID}]'
               value_type: CHAR
-              description: 'Serial number of the {#NAME} device.'
+              description: 'Serial number of the `{#NAME}` device.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -1802,7 +1802,7 @@ zabbix_export:
               type: DEPENDENT
               key: 'cradlepoint_device.net_device.uptime[{#ID}]'
               units: uptime
-              description: 'Time in seconds since the net device established its link.'
+              description: 'Time in seconds since the network device established its link.'
               preprocessing:
                 - type: JSONPATH
                   parameters:
